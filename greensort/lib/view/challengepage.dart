@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:greensort/view/playAndStudy.dart';
+import 'package:greensort/view/scanpage.dart';
 import 'package:greensort/view/trashdetail.dart';
 import 'package:greensort/widgets/BottomappBar.dart';
 import 'package:greensort/widgets/ChallengeAppbar.dart';
+import 'package:provider/provider.dart';
+
+import '../widgets/pointsprovider.dart';
 
 class ChallengePage extends StatelessWidget {
   const ChallengePage({super.key});
@@ -200,7 +204,20 @@ class ChallengePage extends StatelessWidget {
       ),
       bottomNavigationBar: const BottonappBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          // Mở ScanPage và nhận lại điểm
+          final int? result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ScanPage()),
+          );
+
+          // Cộng điểm vào Provider
+          if (result != null) {
+            // ignore: use_build_context_synchronously
+            Provider.of<PointsProvider>(context, listen: false)
+                .addPoints(result);
+          }
+        },
         backgroundColor: Colors.green,
         child: const Icon(Icons.center_focus_strong),
       ),
