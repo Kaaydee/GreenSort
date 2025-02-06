@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:greensort/view/Startpage.dart';
+import 'package:greensort/view/chatpage.dart';
 import 'package:greensort/view/scanpage.dart';
 // import 'package:greensort/view/challengepage.dart';
 import 'package:greensort/widgets/BottomappBar.dart';
@@ -17,6 +19,7 @@ void main() {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: StartPage(),
+        // home: ChatPage(),
       ),
     ),
   );

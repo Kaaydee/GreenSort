@@ -14,7 +14,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, String>> _messages = [];
-  final String apiUrl = "https://chatgpt3.0";
+  final String apiUrl = "http://chatwithdoc.tiendungcorp.com/normalchat";
 
   // Hàm gửi tin nhắn đến API và nhận phản hồi
   Future<void> _sendMessage(String message) async {
@@ -29,16 +29,16 @@ class _ChatPageState extends State<ChatPage> {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"message": message}),
+        headers: {"Content-Type": "application/json; charset=utf-8"},
+        body: utf8.encode(jsonEncode({"message": message})),
       );
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           _messages.add({
             "sender": "bot",
-            "message": responseData["reply"] ??
+            "message": responseData["response"] ??
                 "Xin lỗi, tôi không hiểu yêu cầu của bạn."
           });
         });
@@ -46,11 +46,13 @@ class _ChatPageState extends State<ChatPage> {
         setState(() {
           _messages.add({
             "sender": "bot",
-            "message": "Đã xảy ra lỗi. Vui lòng thử lại sau."
+            "message": "Đã xảy ra lỗi từ phía máy chủ. Vui lòng thử lại sau."
           });
         });
+        debugPrint("Lỗi API: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
+      debugPrint("Lỗi khi gửi yêu cầu: $e");
       setState(() {
         _messages.add({
           "sender": "bot",
